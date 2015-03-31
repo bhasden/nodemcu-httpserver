@@ -14,7 +14,7 @@ return function (port)
          -- of data in order to avoid overflowing the mcu's buffer.
          local connectionThread
 
-         local function onGet(connection, uri)
+         local function onRequest(connection, uri, form, headers)
             local fileServeFunction = nil
             if #(uri.file) > 32 then
                -- nodemcu-firmware cannot handle long filenames.
@@ -37,7 +37,7 @@ return function (port)
             end
             connectionThread = coroutine.create(fileServeFunction)
             --print("Thread created", connectionThread)
-            coroutine.resume(connectionThread, connection, uri.args)
+            coroutine.resume(connectionThread, connection, uri.args, form, headers)
          end
 
          local function onReceive(connection, payload)
@@ -46,7 +46,7 @@ return function (port)
             local req = dofile("httpserver-request.lc")(payload)
             print("Requested URI: " .. req.request)
             if req.methodIsValid then
-               if req.method == "GET" then onGet(connection, req.uri)
+               if req.method == "GET" or req.method == "POST" then onRequest(connection, req.uri, req.form, req.headers)
                else dofile("httpserver-static.lc")(conection, {code=501}) end
             else
                dofile("httpserver-static.lc")(conection, {code=400})
@@ -73,7 +73,17 @@ return function (port)
 
       end
    )
-   print("nodemcu-httpserver running at http://" .. wifi.sta.getip() .. ":" ..  port)
-   return s
 
+    local ip = wifi.sta.getip()
+    
+    if ip == nil then 
+        ip = wifi.ap.getip() 
+    end
+    
+    if ip == nil then 
+        ip = "nil"
+    end
+    
+    print("nodemcu-httpserver running on " .. ip .. ":" .. port)
+    return s
 end
