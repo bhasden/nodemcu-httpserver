@@ -132,8 +132,8 @@ A (very) simple web server written in Lua for the ESP8266 firmware NodeMCU.
 
    * It is recommended you use a firmware build without support for floating point.
    In the (nodemcu-firmware releases page)[https://github.com/nodemcu/nodemcu-firmware/releases] these would be the ones
-   with the term "integer" in them. If you want to build your own, then edit file nodemcu-firmware/app/lua/luaconf.h right
-   around line 572 (line number may change) by adding
+   with the term "integer" in them. If you want to build your own, then edit file app/include/user_config.h right
+   around line 58 (line number may change) by uncommenting
 
          #define LUA_NUMBER_INTEGRAL
 
