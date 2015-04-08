@@ -4,7 +4,7 @@
 
 local function getMimeType(ext)
    -- A few MIME types. Keep list short. If you need something that is missing, let's add it.
-   local mt = {css = "text/css", gif = "image/gif", html = "text/html", ico = "image/x-icon", jpeg = "image/jpeg", jpg = "image/jpeg", js = "application/javascript", josn="application/json", png = "image/png"}
+   local mt = {css = "text/css", gif = "image/gif", html = "text/html", ico = "image/x-icon", jpeg = "image/jpeg", jpg = "image/jpeg", js = "application/javascript", json="application/json", png = "image/png"}
    if mt[ext] then return mt[ext] else return "text/plain" end
 end
 
@@ -14,7 +14,7 @@ end
 
 return function (connection, args)
    sendHeader(connection, 200, "OK", getMimeType(args.ext))
-   --print("Begin sending:", args.file)
+   --print("Begin sending: ", args.file)
    -- Send file in little chunks
    local continue = true
    local bytesSent = 0
@@ -32,7 +32,7 @@ return function (connection, args)
          coroutine.yield()
          connection:send(chunk)
          bytesSent = bytesSent + #chunk
-         --print("Sent" .. args.file, bytesSent)
+         --print("Sent " .. args.file, bytesSent)
       end
    end
    --print("Finished sending:", args.file)

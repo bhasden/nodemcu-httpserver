@@ -70,7 +70,6 @@ return function (port)
 
          connection:on("receive", onReceive)
          connection:on("sent", onSent)
-
       end
    )
 
